@@ -38,13 +38,28 @@ const setup = async () => {
         await runSqlFile(path.join(__dirname, 'schema.sql'));
         await runSqlFile(path.join(__dirname, 'schema_phase2.sql'));
 
-        // 2. Apply migrations from server.js
-        console.log('🛠️ Applying additional migrations...');
+        // 2. Apply migrations & Add missing tables
+        console.log('🛠️ Applying additional migrations & Phase 3/4 tables...');
+
+        // Create medical_reports if missing
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS medical_reports (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                invoice_id UUID REFERENCES invoices(id),
+                patient_id UUID REFERENCES patients(id),
+                doctor_id UUID REFERENCES users(id),
+                complaint TEXT,
+                diagnosis TEXT,
+                treatment TEXT,
+                notes TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
         await pool.query(`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS cancellation_reason TEXT;`);
         await pool.query(`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS employee_id UUID REFERENCES employees(id);`);
         await pool.query(`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS cashier_id UUID REFERENCES users(id);`);
-        await pool.query(`ALTER TABLE medical_reports ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;`);
-        console.log('✅ Migrations applied.');
+        console.log('✅ Migrations & Extra tables applied.');
 
         // 3. Seed Roles
         console.log('🌱 Seeding Roles...');
