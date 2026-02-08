@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         if (token) {
-            // Validate token and get user info
             fetch(API_BASE_URL + '/api/auth/me', {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -29,20 +28,28 @@ export const AuthProvider = ({ children }) => {
     }, [token]);
 
     const login = async (username, password) => {
-        const res = await fetch(API_BASE_URL + '/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
+        try {
+            console.log('API_BASE_URL:', API_BASE_URL);
+            const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
 
-        if (res.ok) {
-            const data = await res.json();
-            localStorage.setItem('token', data.token);
-            setToken(data.token);
-            setUser(data.user);
-            return { success: true };
-        } else {
-            return { success: false, message: 'Invalid Credentials' };
+            if (res.ok) {
+                const data = await res.json();
+                localStorage.setItem('token', data.token);
+                setToken(data.token);
+                setUser(data.user);
+                return { success: true };
+            } else {
+                const errorData = await res.json().catch(() => ({}));
+                alert(`خطأ في السيرفر (${res.status})\nURL: ${API_BASE_URL}\nMessage: ${errorData.message || 'بيانات غير صحيحة'}`);
+                return { success: false, message: errorData.message || 'Invalid Credentials' };
+            }
+        } catch (err) {
+            alert(`فشل الاتصال بالسيرفر!\nURL: ${API_BASE_URL}\nخطأ: ${err.message}`);
+            return { success: false, message: 'Server Unreachable' };
         }
     };
 
