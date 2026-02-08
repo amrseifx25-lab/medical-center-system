@@ -71,12 +71,19 @@ const setup = async () => {
 
         // 4. Seed Admin
         console.log('👤 Seeding Admin user...');
+        // Clear old users to ensure fresh start
+        await pool.query('DELETE FROM users WHERE username IN ($1, $2)', ['admin', 'doctor']);
+
         const bcrypt = require('bcryptjs');
         const adminHashed = await bcrypt.hash('admin123', 10);
         const adminRoleRes = await pool.query("SELECT id FROM roles WHERE name = 'Admin'");
+
+        if (adminRoleRes.rows.length === 0) throw new Error('Admin role not found!');
         const adminRoleId = adminRoleRes.rows[0].id;
+        console.log(`   Found Admin Role ID: ${adminRoleId}`);
+
         await pool.query(
-            "INSERT INTO users (username, password_hash, full_name, role_id) VALUES ('admin', $1, 'System Administrator', $2) ON CONFLICT (username) DO NOTHING",
+            "INSERT INTO users (username, password_hash, full_name, role_id) VALUES ('admin', $1, 'System Administrator', $2)",
             [adminHashed, adminRoleId]
         );
         console.log('✅ Admin user created (admin / admin123).');
