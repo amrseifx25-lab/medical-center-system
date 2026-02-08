@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (username, password) => {
         try {
-            console.log('API_BASE_URL:', API_BASE_URL);
             const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -44,11 +43,9 @@ export const AuthProvider = ({ children }) => {
                 return { success: true };
             } else {
                 const errorData = await res.json().catch(() => ({}));
-                alert(`خطأ في السيرفر (${res.status})\nURL: ${API_BASE_URL}\nMessage: ${errorData.message || 'بيانات غير صحيحة'}`);
-                return { success: false, message: errorData.message || 'Invalid Credentials' };
+                return { success: false, message: errorData.message || 'بيانات غير صحيحة' };
             }
         } catch (err) {
-            alert(`فشل الاتصال بالسيرفر!\nURL: ${API_BASE_URL}\nخطأ: ${err.message}`);
             return { success: false, message: 'Server Unreachable' };
         }
     };
