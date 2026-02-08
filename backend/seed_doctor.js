@@ -2,7 +2,8 @@ const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
 const pool = new Pool({
-    connectionString: 'postgresql://postgres:root@localhost:5432/medical_center'
+    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:root@localhost:5432/medical_center',
+    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
 async function run() {
