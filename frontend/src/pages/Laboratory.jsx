@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { FlaskConical, Plus, Microscope, AlertCircle } from 'lucide-react';
 
@@ -21,28 +22,28 @@ const Lab = () => {
     }, []);
 
     const fetchRequests = () => {
-        fetch('http://localhost:5000/api/lab')
+        fetch(API_BASE_URL + '/api/lab')
             .then(res => res.json())
             .then(data => setRequests(data))
             .catch(err => console.log('API Error'));
     };
 
     const fetchPatients = () => {
-        fetch('http://localhost:5000/api/patients')
+        fetch(API_BASE_URL + '/api/patients')
             .then(res => res.json())
             .then(data => setPatients(data))
             .catch(err => console.log('API Error'));
     };
 
     const fetchResults = (requestId) => {
-        fetch(`http://localhost:5000/api/lab/${requestId}/results`)
+        fetch(`/api/lab/${requestId}/results`)
             .then(res => res.json())
             .then(data => setRequestResults(data))
             .catch(err => console.log('API Error'));
     };
 
     const fetchReport = (requestId) => {
-        fetch(`http://localhost:5000/api/lab/${requestId}`)
+        fetch(`/api/lab/${requestId}`)
             .then(res => res.json())
             .then(data => setReportText(data.result_text || ''))
             .catch(err => console.log('API Error'));
@@ -51,7 +52,7 @@ const Lab = () => {
     const handleCreateRequest = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/lab', {
+            const res = await fetch(API_BASE_URL + '/api/lab', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newRequestData)
@@ -67,7 +68,7 @@ const Lab = () => {
     const handleAddResult = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/lab/result', {
+            const res = await fetch(API_BASE_URL + '/api/lab/result', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...newResultData, request_id: selectedRequest.id })
@@ -81,7 +82,7 @@ const Lab = () => {
 
     const handleSaveReport = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/lab/${selectedRequest.id}/report`, {
+            const res = await fetch(`/api/lab/${selectedRequest.id}/report`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ result_text: reportText })

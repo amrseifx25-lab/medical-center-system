@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { Users, FileText, DollarSign, Plus, Download, Printer } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -116,19 +117,19 @@ const HR = () => {
     // Fetch Initial Data
     useEffect(() => {
         // Employees
-        fetch('http://localhost:5000/api/hr/employees')
+        fetch(API_BASE_URL + '/api/hr/employees')
             .then(res => res.json())
             .then(setEmployees)
             .catch(console.error);
 
         // Departments
-        fetch('http://localhost:5000/api/hr/departments')
+        fetch(API_BASE_URL + '/api/hr/departments')
             .then(res => res.json())
             .then(setDepartments)
             .catch(console.error);
 
         // Accounts (for GL dropdown)
-        fetch('http://localhost:5000/api/accounting/accounts')
+        fetch(API_BASE_URL + '/api/accounting/accounts')
             .then(res => res.json())
             .then(setAccounts)
             .catch(console.error);
@@ -138,7 +139,7 @@ const HR = () => {
     // Fetch Payroll Codes
     useEffect(() => {
         if (activeTab === 'codes') {
-            fetch('http://localhost:5000/api/hr/payroll-codes')
+            fetch(API_BASE_URL + '/api/hr/payroll-codes')
                 .then(res => res.json())
                 .then(setPayrollCodes)
                 .catch(console.error);
@@ -148,13 +149,13 @@ const HR = () => {
     // Fetch Payroll Sheet when tab/month changes
     useEffect(() => {
         if (activeTab === 'payroll') {
-            fetch(`http://localhost:5000/api/hr/payroll/sheet?month=${headerMonth}&year=${headerYear}`)
+            fetch(`/api/hr/payroll/sheet?month=${headerMonth}&year=${headerYear}`)
                 .then(res => res.json())
                 .then(setPayrollSheet)
                 .catch(console.error);
         }
         if (activeTab === 'attendance') {
-            fetch(`http://localhost:5000/api/hr/attendance?month=${headerMonth}&year=${headerYear}`)
+            fetch(`/api/hr/attendance?month=${headerMonth}&year=${headerYear}`)
                 .then(res => res.json())
                 .then(data => {
                     const map = {};
@@ -183,7 +184,7 @@ const HR = () => {
         setAttendanceData({ ...attendanceData, [empId]: updated });
 
         // API Call
-        fetch('http://localhost:5000/api/hr/attendance', {
+        fetch(API_BASE_URL + '/api/hr/attendance', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -225,7 +226,7 @@ const HR = () => {
 
     const handleCalculatePayroll = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/hr/payroll/calculate', {
+            const res = await fetch(API_BASE_URL + '/api/hr/payroll/calculate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ month: headerMonth, year: headerYear })
@@ -233,7 +234,7 @@ const HR = () => {
             if (res.ok) {
                 alert('Payroll Calculated Successfully');
                 // Refresh Sheet
-                fetch(`http://localhost:5000/api/hr/payroll/sheet?month=${headerMonth}&year=${headerYear}`)
+                fetch(`/api/hr/payroll/sheet?month=${headerMonth}&year=${headerYear}`)
                     .then(r => r.json())
                     .then(setPayrollSheet);
             } else {
@@ -249,7 +250,7 @@ const HR = () => {
         if (!confirm('Are you sure you want to close payroll for this month? This will post Journal Entries and cannot be undone.')) return;
 
         try {
-            const res = await fetch('http://localhost:5000/api/hr/payroll/close', {
+            const res = await fetch(API_BASE_URL + '/api/hr/payroll/close', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ month: headerMonth, year: headerYear })
@@ -269,7 +270,7 @@ const HR = () => {
 
     const handleDeleteCode = (id) => {
         if (!confirm('هل أنت متأكد من حذف هذا الكود؟')) return;
-        fetch(`http://localhost:5000/api/hr/payroll-codes/${id}`, { method: 'DELETE' })
+        fetch(`/api/hr/payroll-codes/${id}`, { method: 'DELETE' })
             .then(() => {
                 setPayrollCodes(payrollCodes.filter(c => c.id !== id));
             });
@@ -414,8 +415,8 @@ const HR = () => {
 
         const method = editingCode ? 'PUT' : 'POST';
         const url = editingCode
-            ? `http://localhost:5000/api/hr/payroll-codes/${editingCode.id}`
-            : 'http://localhost:5000/api/hr/payroll-codes';
+            ? `/api/hr/payroll-codes/${editingCode.id}`
+            : '/api/hr/payroll-codes';
 
         fetch(url, {
             method,
@@ -435,8 +436,8 @@ const HR = () => {
     const handleSaveEmployee = async () => {
         const method = editingEmployee ? 'PUT' : 'POST';
         const url = editingEmployee
-            ? `http://localhost:5000/api/hr/employees/${editingEmployee.id}`
-            : 'http://localhost:5000/api/hr/employees';
+            ? `/api/hr/employees/${editingEmployee.id}`
+            : '/api/hr/employees';
 
         try {
             const res = await fetch(url, {

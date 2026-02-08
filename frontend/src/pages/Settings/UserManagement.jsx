@@ -1,3 +1,4 @@
+import API_BASE_URL from '../../api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Trash2, UserPlus, Shield } from 'lucide-react';
@@ -15,7 +16,7 @@ const UserManagement = () => {
     }, []);
 
     const fetchUsers = () => {
-        fetch('http://localhost:5000/api/users', {
+        fetch(API_BASE_URL + '/api/users', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
             .then(res => res.json())
@@ -25,7 +26,7 @@ const UserManagement = () => {
     };
 
     const fetchRoles = () => {
-        fetch('http://localhost:5000/api/users/roles', {
+        fetch(API_BASE_URL + '/api/users/roles', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
             .then(res => res.json())
@@ -35,7 +36,7 @@ const UserManagement = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch('http://localhost:5000/api/users', {
+        fetch(API_BASE_URL + '/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,7 +58,7 @@ const UserManagement = () => {
 
     const handleDelete = (id) => {
         if (!window.confirm('Are you sure?')) return;
-        fetch(`http://localhost:5000/api/users/${id}`, {
+        fetch(`/api/users/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         })

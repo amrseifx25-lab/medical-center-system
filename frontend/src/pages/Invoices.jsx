@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, FileText, DollarSign, Printer, Filter, Check, X, Tag, FileDown, Pencil, Ban } from 'lucide-react';
 
@@ -33,7 +34,7 @@ const Invoices = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/hr/employees');
+            const res = await fetch(API_BASE_URL + '/api/hr/employees');
             if (res.ok) {
                 const data = await res.json();
                 setEmployees(data);
@@ -43,7 +44,7 @@ const Invoices = () => {
 
     const fetchDoctors = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/users');
+            const res = await fetch(API_BASE_URL + '/api/users');
             if (res.ok) {
                 const data = await res.json();
                 setDoctors(data.filter(u => u.role_name === 'Doctor'));
@@ -95,7 +96,7 @@ const Invoices = () => {
 
     const fetchInvoices = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/invoices');
+            const res = await fetch(API_BASE_URL + '/api/invoices');
             const data = await res.json();
             setInvoices(data);
         } catch (err) { console.error(err); }
@@ -103,7 +104,7 @@ const Invoices = () => {
 
     const fetchPatients = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/patients');
+            const res = await fetch(API_BASE_URL + '/api/patients');
             const data = await res.json();
             setPatients(data);
         } catch (err) { console.error(err); }
@@ -111,7 +112,7 @@ const Invoices = () => {
 
     const fetchServices = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/services');
+            const res = await fetch(API_BASE_URL + '/api/services');
             const data = await res.json();
             setServices(data);
         } catch (err) { console.error(err); }
@@ -168,7 +169,7 @@ const Invoices = () => {
         if (!couponCode) return;
         setCouponError('');
         try {
-            const res = await fetch('http://localhost:5000/api/coupons/validate', {
+            const res = await fetch(API_BASE_URL + '/api/coupons/validate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: couponCode })
@@ -199,8 +200,8 @@ const Invoices = () => {
         }
 
         const url = editingId
-            ? `http://localhost:5000/api/invoices/${editingId}`
-            : 'http://localhost:5000/api/invoices';
+            ? `/api/invoices/${editingId}`
+            : '/api/invoices';
 
         const method = editingId ? 'PUT' : 'POST';
 
@@ -231,7 +232,7 @@ const Invoices = () => {
 
     const handleEdit = async (invoice) => {
         try {
-            const res = await fetch(`http://localhost:5000/api/invoices/${invoice.id}`);
+            const res = await fetch(`/api/invoices/${invoice.id}`);
             if (res.ok) {
                 const data = await res.json();
                 setEditingId(invoice.id);
@@ -255,7 +256,7 @@ const Invoices = () => {
     const handleVoid = async () => {
         if (!voidReason) return alert('السبب مطلوب');
         try {
-            const res = await fetch(`http://localhost:5000/api/invoices/${voidId}/void`, {
+            const res = await fetch(`/api/invoices/${voidId}/void`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ reason: voidReason })
@@ -287,7 +288,7 @@ const Invoices = () => {
         }
 
         try {
-            const res = await fetch(`http://localhost:5000/api/invoices/${settleId}/settle`, {
+            const res = await fetch(`/api/invoices/${settleId}/settle`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -494,7 +495,7 @@ const Invoices = () => {
                                         <button
                                             onClick={async () => {
                                                 try {
-                                                    const res = await fetch(`http://localhost:5000/api/invoices/${invoice.id}`);
+                                                    const res = await fetch(`/api/invoices/${invoice.id}`);
                                                     if (res.ok) {
                                                         const data = await res.json();
                                                         const printWindow = window.open('', '_blank');
@@ -512,7 +513,7 @@ const Invoices = () => {
                                         <button
                                             onClick={async () => {
                                                 try {
-                                                    const res = await fetch(`http://localhost:5000/api/invoices/${invoice.id}`);
+                                                    const res = await fetch(`/api/invoices/${invoice.id}`);
                                                     if (res.ok) {
                                                         const data = await res.json();
                                                         const element = document.createElement('div');

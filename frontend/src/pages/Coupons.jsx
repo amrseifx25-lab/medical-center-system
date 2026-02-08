@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { Plus, Tag, Trash2, Copy } from 'lucide-react';
 
@@ -18,7 +19,7 @@ const Coupons = () => {
 
     const fetchCoupons = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/coupons');
+            const res = await fetch(API_BASE_URL + '/api/coupons');
             const data = await res.json();
             setCoupons(data);
         } catch (err) { console.error(err); }
@@ -27,7 +28,7 @@ const Coupons = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/coupons/generate', {
+            const res = await fetch(API_BASE_URL + '/api/coupons/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -42,7 +43,7 @@ const Coupons = () => {
     const deleteCoupon = async (id) => {
         if (!window.confirm('هل أنت متأكد من حذف هذا الكوبون؟')) return;
         try {
-            await fetch(`http://localhost:5000/api/coupons/${id}`, { method: 'DELETE' });
+            await fetch(`/api/coupons/${id}`, { method: 'DELETE' });
             fetchCoupons();
         } catch (err) { console.error(err); }
     };

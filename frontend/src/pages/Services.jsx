@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash, Check, X, Search, Tag } from 'lucide-react';
@@ -30,7 +31,7 @@ const Services = () => {
     const fetchServices = async () => {
         try {
             // Fetch ALL services (including inactive) for management
-            const res = await fetch('http://localhost:5000/api/services?active=all');
+            const res = await fetch(API_BASE_URL + '/api/services?active=all');
             const data = await res.json();
             setServices(data);
         } catch (err) {
@@ -41,8 +42,8 @@ const Services = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const url = isEditing
-            ? `http://localhost:5000/api/services/${formData.id}`
-            : 'http://localhost:5000/api/services';
+            ? `/api/services/${formData.id}`
+            : '/api/services';
 
         const method = isEditing ? 'PUT' : 'POST';
 
@@ -77,7 +78,7 @@ const Services = () => {
 
     const handleToggleStatus = async (service) => {
         try {
-            const res = await fetch(`http://localhost:5000/api/services/${service.id}`, {
+            const res = await fetch(`/api/services/${service.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...service, is_active: !service.is_active })

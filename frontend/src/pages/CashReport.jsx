@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import {
     Printer,
@@ -31,7 +32,7 @@ const CashReport = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/reports/cash-report?date=${reportDate}`, {
+            const res = await fetch(`/api/reports/cash-report?date=${reportDate}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

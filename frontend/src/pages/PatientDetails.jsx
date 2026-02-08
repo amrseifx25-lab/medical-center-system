@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { User, Phone, MapPin, Calendar, FileText, ArrowLeft, Activity } from 'lucide-react';
@@ -14,14 +15,14 @@ const PatientDetails = () => {
             try {
                 // In a real app, we would fetch by ID. 
                 // For now, we will try to fetch the specific patient or mock it since our API get-all is simple
-                const res = await fetch(`http://localhost:5000/api/patients/${id}`); // Assuming we create this endpoint or filter client side
+                const res = await fetch(`/api/patients/${id}`); // Assuming we create this endpoint or filter client side
 
                 if (res.ok) {
                     const data = await res.json();
                     setPatient(data);
                 } else {
                     // Fallback if endpoint doesn't exist yet, fetch all and find
-                    const allRes = await fetch('http://localhost:5000/api/patients');
+                    const allRes = await fetch(API_BASE_URL + '/api/patients');
                     const allData = await allRes.json();
                     const found = allData.find(p => p.id === id);
                     if (found) setPatient(found);

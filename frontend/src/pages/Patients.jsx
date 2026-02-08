@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, User, FileText, Filter } from 'lucide-react';
@@ -18,7 +19,7 @@ const Patients = () => {
 
     // Fetch patients (Mock data for now if API fails)
     useEffect(() => {
-        fetch('http://localhost:5000/api/patients')
+        fetch(API_BASE_URL + '/api/patients')
             .then(res => res.json())
             .then(data => setPatients(data))
             .catch(err => {
@@ -45,7 +46,7 @@ const Patients = () => {
         }
 
         try {
-            const res = await fetch('http://localhost:5000/api/patients', {
+            const res = await fetch(API_BASE_URL + '/api/patients', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

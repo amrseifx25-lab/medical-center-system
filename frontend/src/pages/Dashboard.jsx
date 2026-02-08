@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -35,7 +36,7 @@ const Dashboard = () => {
     const fetchStats = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/reports/dashboard');
+            const res = await fetch(API_BASE_URL + '/api/reports/dashboard');
             if (!res.ok) {
                 console.error("Failed to fetch dashboard stats:", res.status, res.statusText);
                 return;
@@ -55,7 +56,7 @@ const Dashboard = () => {
         if (!window.confirm('هل أنت متأكد من إغلاق اليوم؟\nهذا الإجراء سيقوم بتثبيت الإيرادات ولا يمكن التراجع عنه.')) return;
 
         try {
-            const res = await fetch('http://localhost:5000/api/reports/close-day', { method: 'POST' });
+            const res = await fetch(API_BASE_URL + '/api/reports/close-day', { method: 'POST' });
             const data = await res.json();
             if (res.ok) {
                 alert(`تم إغلاق اليوم بنجاح.\nالإيراد: ${data.revenue} ج.م\nعدد الفواتير: ${data.count}`);

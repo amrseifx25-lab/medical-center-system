@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { Activity, Users, Clock, FileText, CheckCircle, ChevronLeft, Calendar, User, Search, AlertCircle, History } from 'lucide-react';
 
@@ -23,7 +24,7 @@ const Clinic = () => {
     const fetchQueue = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/doctor/queue', {
+            const res = await fetch(API_BASE_URL + '/api/doctor/queue', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -37,7 +38,7 @@ const Clinic = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/doctor/history/${patientId}`, {
+            const res = await fetch(`/api/doctor/history/${patientId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -58,7 +59,7 @@ const Clinic = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/doctor/report', {
+            const res = await fetch(API_BASE_URL + '/api/doctor/report', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

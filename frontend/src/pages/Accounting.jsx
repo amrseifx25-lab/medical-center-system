@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { FileText, Plus, BookOpen, TrendingUp, Wallet, DollarSign, Settings, Trash2, Edit3, Download, Save, Users, Lock } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -75,15 +76,15 @@ const Accounting = () => {
         }
     }, [activeTab]);
 
-    const fetchDepartments = () => fetch('http://localhost:5000/api/accounting/departments').then(r => r.json()).then(setDepartments).catch(console.error);
+    const fetchDepartments = () => fetch(API_BASE_URL + '/api/accounting/departments').then(r => r.json()).then(setDepartments).catch(console.error);
     // const fetchCategories = () => ...
 
     // Fetchers
-    const fetchBalanceSheet = () => fetch('http://localhost:5000/api/accounting/reports/balance-sheet').then(r => r.json()).then(setBalanceSheet).catch(console.error);
-    const fetchSupplierAging = () => fetch('http://localhost:5000/api/accounting/reports/aging').then(r => r.json()).then(setSupplierAging).catch(console.error);
+    const fetchBalanceSheet = () => fetch(API_BASE_URL + '/api/accounting/reports/balance-sheet').then(r => r.json()).then(setBalanceSheet).catch(console.error);
+    const fetchSupplierAging = () => fetch(API_BASE_URL + '/api/accounting/reports/aging').then(r => r.json()).then(setSupplierAging).catch(console.error);
 
     const fetchJournalEntries = () => {
-        fetch('http://localhost:5000/api/accounting/journal/entries')
+        fetch(API_BASE_URL + '/api/accounting/journal/entries')
             .then(res => res.json())
             .then(data => setJournalEntries(data))
             .catch(err => {
@@ -93,14 +94,14 @@ const Accounting = () => {
     };
 
     const fetchTrialBalance = () => {
-        fetch('http://localhost:5000/api/accounting/reports/trial-balance')
+        fetch(API_BASE_URL + '/api/accounting/reports/trial-balance')
             .then(res => res.json())
             .then(data => setTrialBalance(data))
             .catch(err => console.log('API Error'));
     };
 
     const fetchProfitLoss = () => {
-        fetch('http://localhost:5000/api/accounting/reports/profit-loss')
+        fetch(API_BASE_URL + '/api/accounting/reports/profit-loss')
             .then(res => res.json())
             .then(data => setProfitLoss(data))
             .catch(console.error);
@@ -108,7 +109,7 @@ const Accounting = () => {
 
     const fetchAccounts = () => {
         // ... (Keep existing fetchAccounts logic)
-        fetch('http://localhost:5000/api/accounting/accounts')
+        fetch(API_BASE_URL + '/api/accounting/accounts')
             .then(res => res.json())
             .then(data => {
                 const flat = [];
@@ -131,13 +132,13 @@ const Accounting = () => {
     });
 
     const fetchSuppliers = () => {
-        fetch('http://localhost:5000/api/accounting/suppliers').then(r => r.json()).then(setSuppliers).catch(console.error);
+        fetch(API_BASE_URL + '/api/accounting/suppliers').then(r => r.json()).then(setSuppliers).catch(console.error);
     };
 
     const handleSupplierSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/accounting/suppliers', {
+            const res = await fetch(API_BASE_URL + '/api/accounting/suppliers', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(supplierForm)
@@ -160,7 +161,7 @@ const Accounting = () => {
     const handleAddAccount = async () => {
         if (!newAcc.code || !newAcc.name) return alert('Please fill in Code and Name');
         try {
-            const res = await fetch('http://localhost:5000/api/accounting/accounts', {
+            const res = await fetch(API_BASE_URL + '/api/accounting/accounts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newAcc)
@@ -179,7 +180,7 @@ const Accounting = () => {
     const handleDeleteAccount = async (id) => {
         if (window.confirm('Delete this account? Ensure it has no transactions.')) {
             try {
-                const res = await fetch(`http://localhost:5000/api/accounting/accounts/${id}`, { method: 'DELETE' });
+                const res = await fetch(`/api/accounting/accounts/${id}`, { method: 'DELETE' });
                 if (res.ok) {
                     fetchAccounts();
                 } else {
@@ -193,7 +194,7 @@ const Accounting = () => {
     const addDepartment = async () => {
         if (!newDept) return alert('الرجاء إدخال اسم القسم');
         try {
-            const res = await fetch('http://localhost:5000/api/accounting/departments', {
+            const res = await fetch(API_BASE_URL + '/api/accounting/departments', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: newDept })
@@ -210,7 +211,7 @@ const Accounting = () => {
 
     const deleteDepartment = async (id) => {
         if (window.confirm('هل أنت متأكد من حذف هذا القسم؟')) {
-            await fetch(`http://localhost:5000/api/accounting/departments/${id}`, { method: 'DELETE' });
+            await fetch(`/api/accounting/departments/${id}`, { method: 'DELETE' });
             fetchDepartments();
         }
     };
@@ -266,7 +267,7 @@ const Accounting = () => {
     const handleExpenseSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/accounting/expenses', {
+            const res = await fetch(API_BASE_URL + '/api/accounting/expenses', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(expenseForm)
@@ -353,7 +354,7 @@ const Accounting = () => {
                 lines: journalLines.filter(row => row.account_id && (Number(row.debit) > 0 || Number(row.credit) > 0))
             };
 
-            const res = await fetch('http://localhost:5000/api/accounting/journal', {
+            const res = await fetch(API_BASE_URL + '/api/accounting/journal', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(entryData)
@@ -393,7 +394,7 @@ const Accounting = () => {
     const submitRevision = async () => {
         if (!revisionReason) return alert('Reason is required');
         try {
-            const res = await fetch(`http://localhost:5000/api/accounting/journal/${revisingId}/revise`, {
+            const res = await fetch(`/api/accounting/journal/${revisingId}/revise`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ description: reviseDesc, reason: revisionReason })
@@ -587,7 +588,7 @@ const Accounting = () => {
                                 </div>
                                 <button
                                     onClick={() => {
-                                        fetch(`http://localhost:5000/api/accounting/reports/account-statement?account_id=${reportFilters.accountId}&start_date=${reportFilters.startDate}&end_date=${reportFilters.endDate}`)
+                                        fetch(`/api/accounting/reports/account-statement?account_id=${reportFilters.accountId}&start_date=${reportFilters.startDate}&end_date=${reportFilters.endDate}`)
                                             .then(r => r.json())
                                             .then(setGlStats)
                                             .catch(console.error);
@@ -1480,7 +1481,7 @@ const Accounting = () => {
                         </div>
                         <button
                             onClick={() => {
-                                fetch(`http://localhost:5000/api/accounting/close-month-preview?year=${closingYear}&month=${closingMonth}`)
+                                fetch(`/api/accounting/close-month-preview?year=${closingYear}&month=${closingMonth}`)
                                     .then(res => res.json())
                                     .then(data => {
                                         if (data.error) alert(data.error);
@@ -1533,7 +1534,7 @@ const Accounting = () => {
                                         if (!window.confirm('هل أنت متأكد من إقفال هذا الشهر؟ لا يمكن التراجع عن هذه العملية بسهولة.')) return;
                                         setIsClosing(true);
                                         try {
-                                            const res = await fetch('http://localhost:5000/api/accounting/close-month', {
+                                            const res = await fetch(API_BASE_URL + '/api/accounting/close-month', {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify({ year: closingYear, month: closingMonth })

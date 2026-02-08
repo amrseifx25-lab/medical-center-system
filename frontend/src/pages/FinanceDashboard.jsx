@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { DollarSign, Activity, TrendingUp, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -16,7 +17,7 @@ const FinanceDashboard = () => {
         const fetchFinanceStats = async () => {
             setLoading(true);
             try {
-                const res = await fetch('http://localhost:5000/api/reports/dashboard');
+                const res = await fetch(API_BASE_URL + '/api/reports/dashboard');
                 if (res.ok) {
                     const data = await res.json();
                     setStats({

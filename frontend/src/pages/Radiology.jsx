@@ -1,3 +1,4 @@
+import API_BASE_URL from '../api';
 import React, { useState, useEffect } from 'react';
 import { Activity, Plus, FileText, CheckCircle } from 'lucide-react';
 
@@ -18,14 +19,14 @@ const Radiology = () => {
     }, []);
 
     const fetchRequests = () => {
-        fetch('http://localhost:5000/api/radiology')
+        fetch(API_BASE_URL + '/api/radiology')
             .then(res => res.json())
             .then(data => setRequests(data))
             .catch(err => console.log('API Error', err));
     };
 
     const fetchPatients = () => {
-        fetch('http://localhost:5000/api/patients')
+        fetch(API_BASE_URL + '/api/patients')
             .then(res => res.json())
             .then(data => setPatients(data))
             .catch(err => console.log('API Error', err));
@@ -34,7 +35,7 @@ const Radiology = () => {
     const handeCreateRequest = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/radiology', {
+            const res = await fetch(API_BASE_URL + '/api/radiology', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newRequestData)
@@ -52,7 +53,7 @@ const Radiology = () => {
     const handleSaveReport = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/radiology/report', {
+            const res = await fetch(API_BASE_URL + '/api/radiology/report', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
