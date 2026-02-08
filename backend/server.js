@@ -44,7 +44,6 @@ app.get('/', (req, res) => {
 
 // Start Server
 // Start Server
-
 app.listen(PORT, async () => {
     try {
         await pool.query(`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS cancellation_reason TEXT;`);
